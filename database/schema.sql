@@ -1,3 +1,22 @@
+IF DB_ID('FSDP') IS NULL
+BEGIN
+    CREATE DATABASE FSDP;
+END
+GO
+
+USE FSDP;
+GO
+
+IF OBJECT_ID('dbo.Centers', 'U') IS NOT NULL DROP TABLE dbo.HygieneGrades;
+IF OBJECT_ID('dbo.Instructors', 'U') IS NOT NULL DROP TABLE dbo.Inspections;
+IF OBJECT_ID('dbo.Terms', 'U') IS NOT NULL DROP TABLE dbo.Complaints;
+IF OBJECT_ID('dbo.Classes', 'U') IS NOT NULL DROP TABLE dbo.ItemLikes;
+IF OBJECT_ID('dbo.Invoices', 'U') IS NOT NULL DROP TABLE dbo.Feedback;
+IF OBJECT_ID('dbo.GradingSessions', 'U') IS NOT NULL DROP TABLE dbo.Payments;
+IF OBJECT_ID('dbo.GradingResults', 'U') IS NOT NULL DROP TABLE dbo.OrderItems;
+GO
+
+
 CREATE TABLE Centres (centreId INT IDENTITY PRIMARY KEY, name VARCHAR(50) NOT NULL);
 CREATE TABLE Instructors (instructorId INT IDENTITY PRIMARY KEY, name VARCHAR(50) NOT NULL);
 CREATE TABLE Terms (termId INT IDENTITY PRIMARY KEY, name VARCHAR(30), startDate DATE, endDate DATE);
