@@ -49,7 +49,7 @@ INSERT INTO Terms(name, startDate, endDate)
 VALUES ('Term 4, 2026', DATEADD(DAY,-30,@today), DATEADD(DAY,45,@today));
 
 INSERT INTO Classes(centreId, venue, title, instructorId, classDate, startTime, durationMin, capacity, enrolled) VALUES
-(1,'Mat A',"Children's Aikido",1,@today,'17:00',60,24,18),
+(1,'Mat A','Children Aikido',1,@today,'17:00',60,24,18),
 (1,'Mat A','Adult fundamentals',2,@today,'18:30',60,28,22),
 (2,'Studio 1','Mixed-level Aikido',3,@today,'19:00',60,24,16),
 -- overlapping pair (same instructor, tomorrow) = scheduling conflict
