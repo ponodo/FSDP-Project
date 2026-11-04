@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upload document · Aikido Shinjukai</title>
+    <link rel="stylesheet" href="pages.css" />
+  </head>
+  <body data-page="documents" data-crumbs="Administration|Documents & records">
+    <div class="app">
+      <aside class="sidebar" id="sidebar"></aside>
+      <div>
+        <header class="topbar" id="topbar"></header>
+        <main class="page">
+          <a class="back" href="documents.html">← Documents &amp; records</a>
+          <h1>Upload document</h1>
+          <p class="sub" style="margin-bottom: 18px">
+            Attach a file and connect it to the right centre and session.
+          </p>
+
+          <div class="upload-grid">
+            <div class="card">
+              <h2 style="margin-bottom: 14px">File &amp; record details</h2>
+
+              <div class="drop" id="drop">
+                <div id="dropEmpty">
+                  <div class="fname">Drop a file here</div>
+                  <div class="meta">PDF, XLSX or image · up to 10 MB</div>
+                </div>
+                <div id="dropFile" class="hidden">
+                  <div class="fname" id="fileName"></div>
+                  <div class="meta" id="fileMeta"></div>
+                  <div class="progress"><i id="bar"></i></div>
+                  <div class="prog-row">
+                    <span>File transfer</span
+                    ><span id="progText">Ready to upload</span>
+                  </div>
+                </div>
+                <input
+                  type="file"
+                  id="file"
+                  class="hidden"
+                  accept=".pdf,.xlsx,.png,.jpg,.jpeg"
+                />
+                <button
+                  type="button"
+                  class="btn block"
+                  id="choose"
+                  style="background: #fff; margin-top: 6px"
+                >
+                  Choose file
+                </button>
+              </div>
+
+              <div id="formError"></div>
+
+              <div class="field">
+                <label for="title">Document title *</label>
+                <input
+                  type="text"
+                  id="title"
+                  maxlength="150"
+                  placeholder="e.g. October grading results"
+                />
+              </div>
+              <div class="two">
+                <div class="field">
+                  <label for="category">Category *</label
+                  ><select id="category"></select>
+                </div>
+                <div class="field">
+                  <label for="centre">Centre *</label
+                  ><select id="centre"></select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="term">Associated term</label
+                ><select id="term">
+                  <option value="">None</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="session">Grading session</label
+                ><select id="session">
+                  <option value="">None</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="access">Access</label
+                ><select id="access"></select>
+              </div>
+              <p class="hint">
+                PDF, XLSX or image · Up to 10 MB. Categories also include Class
+                schedules, Payment records and Centre documents.
+              </p>
+
+              <button
+                class="btn primary block"
+                id="save"
+                type="button"
+                style="padding: 12px"
+              >
+                Upload &amp; save record
+              </button>
+            </div>
+
+            <div>
+              <div class="side-card linked" id="linked"></div>
+
+              <div class="side-label">After upload &amp; save</div>
+              <div class="status idle" id="okBox">Nothing saved yet.</div>
+              <a class="btn block hidden" id="viewSaved" href="documents.html"
+                >View saved record</a
+              >
+
+              <div class="side-label">If the upload fails</div>
+              <div class="status idle" id="failBox">No errors.</div>
+              <button class="btn block hidden" id="retry" type="button">
+                Retry upload
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="shell.js"></script>
+    <script src="upload.js"></script>
+  </body>
+</html>

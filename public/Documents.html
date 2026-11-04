@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Documents &amp; records · Aikido Shinjukai</title>
+    <link rel="stylesheet" href="pages.css" />
+  </head>
+  <body data-page="documents" data-crumbs="Administration|Documents & records">
+    <div class="app">
+      <aside class="sidebar" id="sidebar"></aside>
+      <div>
+        <header class="topbar" id="topbar"></header>
+        <main class="page">
+          <div class="page-head">
+            <div>
+              <h1>Documents &amp; records</h1>
+              <p class="sub">
+                A shared home for the records that keep every centre running
+                smoothly.
+              </p>
+            </div>
+            <a class="btn primary" href="upload.html"
+              ><svg
+                viewBox="0 0 16 16"
+                width="14"
+                height="14"
+                style="stroke: currentColor; fill: none; stroke-width: 1.8"
+              >
+                <path d="M8 11V2.5M4.5 6L8 2.5 11.5 6M2.5 13.5h11" /></svg
+              >Upload document</a
+            >
+          </div>
+
+          <div id="notice"></div>
+
+          <div class="filters">
+            <input
+              class="grow"
+              id="q"
+              type="search"
+              placeholder="Search files, students or reference…"
+              aria-label="Search"
+            />
+            <select id="centre">
+              <option value="">All centres</option>
+            </select>
+            <select id="type">
+              <option value="">All file types</option>
+              <option value="pdf">PDF</option>
+              <option value="spreadsheet">Spreadsheet</option>
+              <option value="document">Document</option>
+              <option value="image">Image</option>
+            </select>
+            <select id="sort">
+              <option value="updated">Last updated</option>
+              <option value="name">Name (A–Z)</option>
+              <option value="size">Size (largest)</option>
+            </select>
+          </div>
+
+          <div class="cats" id="cats"></div>
+
+          <div class="docs-grid">
+            <div class="card panel-blue">
+              <div class="card-head">
+                <h2 id="panelTitle">All documents</h2>
+                <button class="link-btn" id="newFolder">New folder +</button>
+              </div>
+              <div class="crumbs" id="crumbs"></div>
+              <div class="chips" id="folders"></div>
+              <div class="tabs" id="tabs"></div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Centre</th>
+                      <th>Updated</th>
+                      <th>Size</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rows"></tbody>
+                </table>
+              </div>
+              <div class="pager" id="pager"></div>
+            </div>
+
+            <div>
+              <div class="card details" id="details">
+                <h2>File details</h2>
+                <div class="empty">Select a file to see its details.</div>
+              </div>
+              <div class="foot-note" id="detailFoot"></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <dialog id="folderDialog">
+      <h3>New folder</h3>
+      <div class="field">
+        <label for="fCategory">Category</label
+        ><select id="fCategory"></select>
+      </div>
+      <div class="field">
+        <label for="fName">Folder name</label
+        ><input type="text" id="fName" maxlength="60" placeholder="e.g. 2027" />
+      </div>
+      <div
+        class="err-text"
+        id="fErr"
+        style="color: #a33c25; font-size: 12px"
+      ></div>
+      <div class="actions">
+        <button class="btn" id="fCancel" type="button">Cancel</button
+        ><button class="btn primary" id="fSave" type="button">Create</button>
+      </div>
+    </dialog>
+
+    <script src="shell.js"></script>
+    <script src="documents.js"></script>
+  </body>
+</html>

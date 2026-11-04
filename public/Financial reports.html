@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Financial reports · Aikido Shinjukai</title>
+    <link rel="stylesheet" href="pages.css" />
+  </head>
+  <body data-page="financial" data-crumbs="Administration|Financial reports">
+    <div class="app">
+      <aside class="sidebar" id="sidebar"></aside>
+      <div>
+        <header class="topbar" id="topbar"></header>
+        <main class="page">
+          <div class="page-head">
+            <div>
+              <h1>Financial reports</h1>
+              <p class="sub">
+                A clearer view of collections, outstanding fees and verified
+                transactions across the organisation.
+              </p>
+            </div>
+            <a class="btn primary" id="exportAll" href="#"
+              ><svg
+                viewBox="0 0 16 16"
+                width="14"
+                height="14"
+                style="stroke: currentColor; fill: none; stroke-width: 1.8"
+              >
+                <path d="M8 2.5V11M4.5 7.5L8 11l3.5-3.5M2.5 13.5h11" /></svg
+              >Export report</a
+            >
+          </div>
+
+          <div id="error"></div>
+
+          <div class="filters">
+            <select id="preset" aria-label="Date range">
+              <option value="30">Last 30 days</option>
+              <option value="month">This month</option>
+              <option value="lastmonth">Last month</option>
+              <option value="term">Current term</option>
+              <option value="custom">Custom range…</option>
+            </select>
+            <span
+              id="customDates"
+              class="hidden"
+              style="display: flex; gap: 6px; align-items: center"
+            >
+              <input type="date" id="from" aria-label="From" /> –
+              <input type="date" id="to" aria-label="To" />
+            </span>
+            <select id="centre" aria-label="Centre">
+              <option value="">All centres</option>
+            </select>
+            <select id="feeType" aria-label="Fee type">
+              <option value="">All fee types</option>
+            </select>
+            <span class="stamp" id="stamp"></span>
+          </div>
+
+          <div id="content">
+            <div class="kpis">
+              <div class="kpi good">
+                <div class="lbl"><i class="dot"></i>Fees collected</div>
+                <div class="val" id="kCollected">–</div>
+                <div class="note" id="kCollectedN"></div>
+              </div>
+              <div class="kpi bad">
+                <div class="lbl"><i class="dot"></i>Outstanding fees</div>
+                <div class="val" id="kOut">–</div>
+                <div class="note" id="kOutN"></div>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="card chart-card">
+                <div class="card-head">
+                  <h2>Weekly fee collection</h2>
+                  <span
+                    id="rangeLabel"
+                    style="color: var(--red); font-size: 12px; font-weight: 600"
+                  ></span>
+                </div>
+                <div class="legend">
+                  <span><i style="background: var(--green)"></i>Collected</span
+                  ><span><i style="background: var(--red)"></i>Outstanding</span
+                  ><span>SGD</span>
+                </div>
+                <div class="chart">
+                  <div class="y-axis" id="yAxis"></div>
+                  <div class="plot">
+                    <div class="bars" id="bars"></div>
+                    <div class="x-labels" id="xLabels"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="card methods">
+                <div class="card-head"><h2>Collection by method</h2></div>
+                <div id="methods"></div>
+                <p class="fine">
+                  Only completed online payments and verified reported payments
+                  are included.
+                </p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head">
+                <h2>Centre breakdown</h2>
+                <a
+                  id="exportCentres"
+                  href="#"
+                  style="font-size: 12px; font-weight: 600"
+                  >Export CSV</a
+                >
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Training centre</th>
+                      <th>Collected</th>
+                      <th>Outstanding</th>
+                      <th>Transactions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="centreRows"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card hidden" id="txCard" style="margin-top: 16px">
+              <div class="card-head">
+                <h2 id="txTitle">Transactions</h2>
+                <button class="link-btn" id="txClose">Close</button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Invoice</th>
+                      <th>Student</th>
+                      <th>Centre</th>
+                      <th>Fee type</th>
+                      <th>Method</th>
+                      <th>Bank reference</th>
+                      <th style="text-align: right">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody id="txRows"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script src="shell.js"></script>
+    <script src="financial-reports.js"></script>
+  </body>
+</html>
