@@ -13,6 +13,10 @@ if (fs.existsSync(overviewPath)) app.use("/api", require(overviewPath));
 
 app.use("/api/finance", require("./routes/Financeroutes"));
 app.use("/api/documents", require("./routes/Documentroutes"));
+// Savion
+app.use("/api/finance", require("./routes/Financeroutes"));
+app.use("/api/documents", require("./routes/Documentroutes"));
+app.use("/api/grading", require("./routes/Gradingroutes"));
 
 app.use("/api", (req, res) => res.status(404).json({ error: "Not found" }));
 app.use((err, req, res, next) => {
