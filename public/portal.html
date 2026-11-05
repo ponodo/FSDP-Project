@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My portal · Aikido Shinjukai</title>
+  <link rel="stylesheet" href="pages.css">
+  <link rel="stylesheet" href="overview.css">
+</head>
+<body>
+<div class="portal">
+  <div class="portal-top">
+    <div class="brand"><div class="brand-mark" style="width:26px;height:26px;border:3px solid var(--red);border-radius:50%"></div><div><b>AIKIDO SHINJUKAI</b><small>Student portal</small></div></div>
+    <button class="btn" id="logout" type="button">Sign out</button>
+  </div>
+  <h1 id="hello">Welcome</h1>
+  <p class="sub" id="info" style="margin-bottom:18px"></p>
+  <div id="error"></div>
+  <div id="linkNote"></div>
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-head"><h2>Upcoming classes at your centre</h2></div>
+    <div id="classes"></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>My invoices</h2></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Invoice</th><th>Fee type</th><th>Amount</th><th>Due</th><th>Status</th></tr></thead>
+      <tbody id="invoices"></tbody>
+    </table></div>
+  </div>
+</div>
+<script src="shell.js"></script>
+<script src="portal.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · Aikido Shinjukai</title>
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><div class="brand-mark"></div><div><b>AIKIDO SHINJUKAI</b><small>Member access</small></div></div>
+    <a href="#" id="help">Need help?</a>
+  </header>
+  <main>
+    <section class="panel">
+      <div class="head green">
+        <div class="eyebrow">MEMBER ACCESS</div>
+        <h1>Welcome back</h1>
+        <p>Sign in to your Aikido Shinjukai account.</p>
+      </div>
+      <form id="form" novalidate>
+        <div id="alert"></div>
+        <div class="field" id="f-email">
+          <label for="email">Email address</label>
+          <input type="email" id="email" autocomplete="username" placeholder="you@example.com" required>
+          <div class="msg"></div>
+        </div>
+        <div class="field" id="f-password">
+          <label for="password">Password</label>
+          <div class="pw">
+            <input type="password" id="password" autocomplete="current-password" placeholder="Enter your password" required>
+            <button type="button" class="eye" data-eye="password" aria-label="Show password"><svg viewBox="0 0 16 16"><path d="M1 8s2.5-4.5 7-4.5S15 8 15 8s-2.5 4.5-7 4.5S1 8 1 8z"/><circle cx="8" cy="8" r="2"/></svg></button>
+          </div>
+          <div class="msg"></div>
+        </div>
+        <div class="line">
+          <label class="check"><input type="checkbox" id="remember"> Remember me</label>
+          <a href="#" id="forgot">Forgot password?</a>
+        </div>
+        <button class="go" id="go" type="submit">Sign in <span>→</span></button>
+        <div class="alt">New to the portal? <a href="register.html">Create an account</a></div>
+        <div class="note"><b>Students &amp; administrators</b>Use your registered email. Administrators sign in with their assigned account.</div>
+      </form>
+    </section>
+  </main>
+  <footer><span>Aikido Shinjukai · One practice. Connected.</span><span><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact us</a></span></footer>
+  <script src="login.js"></script>
+</body>
+</html>

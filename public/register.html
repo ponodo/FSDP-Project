@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create account · Aikido Shinjukai</title>
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><div class="brand-mark"></div><div><b>AIKIDO SHINJUKAI</b><small>Member access</small></div></div>
+    <a href="#" id="help">Need help?</a>
+  </header>
+  <main>
+    <section class="panel wide">
+      <div class="head lav">
+        <div class="eyebrow">STUDENT PORTAL</div>
+        <h1>Create your student account</h1>
+        <p>Access your classes, invoices and student records in one place.</p>
+      </div>
+      <form id="form" novalidate>
+        <div id="alert"></div>
+        <div class="field" id="f-fullName"><label for="fullName">Full name</label>
+          <input type="text" id="fullName" autocomplete="name" maxlength="80" placeholder="As shown on your student record"><div class="msg"></div></div>
+        <div class="field" id="f-email"><label for="email">Email address</label>
+          <input type="email" id="email" autocomplete="email" maxlength="120" placeholder="you@example.com"><div class="msg"></div></div>
+        <div class="row">
+          <div class="field" id="f-password"><label for="password">Password</label>
+            <div class="pw"><input type="password" id="password" autocomplete="new-password" placeholder="Create a password">
+              <button type="button" class="eye" data-eye="password" aria-label="Show password"><svg viewBox="0 0 16 16"><path d="M1 8s2.5-4.5 7-4.5S15 8 15 8s-2.5 4.5-7 4.5S1 8 1 8z"/><circle cx="8" cy="8" r="2"/></svg></button></div><div class="msg"></div></div>
+          <div class="field" id="f-confirmPassword"><label for="confirmPassword">Confirm password</label>
+            <div class="pw"><input type="password" id="confirmPassword" autocomplete="new-password" placeholder="Re-enter password">
+              <button type="button" class="eye" data-eye="confirmPassword" aria-label="Show password"><svg viewBox="0 0 16 16"><path d="M1 8s2.5-4.5 7-4.5S15 8 15 8s-2.5 4.5-7 4.5S1 8 1 8z"/><circle cx="8" cy="8" r="2"/></svg></button></div><div class="msg"></div></div>
+        </div>
+        <div class="hint">Use at least 8 characters, including a letter and a number.</div>
+        <div class="row">
+          <div class="field" id="f-centreId"><label for="centreId">Training centre</label>
+            <select id="centreId"><option value="">Select your centre</option></select><div class="msg"></div></div>
+          <div class="field" id="f-memberId"><label for="memberId">Student / member ID (optional)</label>
+            <input type="text" id="memberId" maxlength="20" placeholder="e.g. AS-0142"><div class="msg"></div></div>
+        </div>
+        <div class="info"><b>Already training with us?</b>Add your ID to help us link your student record. If you don't know it, leave it blank; your centre can help.</div>
+        <div class="field" id="f-agree" style="margin-bottom:16px">
+          <label class="check"><input type="checkbox" id="agree"> I agree to the <a href="#">Terms of use</a> and <a href="#">Privacy policy</a>.</label>
+          <div class="msg"></div></div>
+        <button class="go" id="go" type="submit">Create account <span>→</span></button>
+        <div class="alt">Already have an account? <a href="login.html">Sign in</a></div>
+      </form>
+    </section>
+  </main>
+  <footer><span>Aikido Shinjukai · One practice. Connected.</span><span><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact us</a></span></footer>
+  <script src="register.js"></script>
+</body>
+</html>

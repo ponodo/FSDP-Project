@@ -1,0 +1,43 @@
+/* Login + registration pages */
+:root { --bg:#f6f4f0; --ink:#2a2724; --mut:#7b766f; --line:#e8e4dd; --red:#b8452c; --green-soft:#e3efe7; --lav:#e9ebf7; }
+* { box-sizing: border-box; }
+body { margin:0; min-height:100vh; display:flex; flex-direction:column; background:var(--bg); color:var(--ink);
+  font:14px/1.45 Inter, system-ui, -apple-system, "Segoe UI", sans-serif; }
+a { color:var(--red); text-decoration:none; font-weight:600; } a:hover { text-decoration:underline; }
+.top { background:#fff; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; padding:0 clamp(16px,8vw,100px); height:58px; font-size:12px; }
+.top a { color:var(--ink); font-weight:400; }
+.brand { display:flex; gap:10px; align-items:center; }
+.brand-mark { width:26px; height:26px; border:3px solid var(--red); border-radius:50%; }
+.brand b { display:block; font-size:12px; } .brand small { color:var(--mut); font-size:10px; }
+main { flex:1; display:grid; place-items:start center; padding:60px 16px 40px; }
+.panel { width:min(100%,370px); background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+.panel.wide { width:min(100%,506px); }
+.head { padding:22px 22px 20px; } .head.green { background:var(--green-soft); } .head.lav { background:var(--lav); }
+.eyebrow { font-size:10px; letter-spacing:.7px; color:var(--red); font-weight:700; margin-bottom:6px; }
+.head h1 { margin:0 0 6px; font-size:26px; letter-spacing:-.3px; } .head p { margin:0; color:var(--mut); font-size:13px; }
+form { padding:22px; }
+.field { margin-bottom:16px; flex:1; } .row { display:flex; gap:14px; } .row .field { min-width:0; }
+label { display:block; font-size:12px; font-weight:500; margin-bottom:6px; }
+input[type=text], input[type=email], input[type=password], select {
+  width:100%; height:40px; padding:0 12px; border:1px solid var(--line); border-radius:8px; background:#fff; font:inherit; color:inherit; }
+input:focus, select:focus { outline:2px solid #e8b8ab; border-color:var(--red); }
+.field.bad input, .field.bad select { border-color:#c4412a; background:#fffaf9; }
+.msg { font-size:11px; color:#a33c25; margin-top:5px; min-height:0; }
+.pw { position:relative; } .pw input { padding-right:40px; }
+.eye { position:absolute; right:4px; top:4px; width:32px; height:32px; border:0; background:none; cursor:pointer; color:var(--mut); }
+.eye svg { width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.6; }
+.hint { font-size:11px; color:var(--mut); margin:-8px 0 16px; }
+.line { display:flex; justify-content:space-between; align-items:center; font-size:12px; margin-bottom:18px; }
+.check { display:flex; gap:8px; align-items:center; font-size:12px; margin:0; font-weight:400; }
+.check input { width:16px; height:16px; accent-color:var(--red); }
+button.go { width:100%; height:42px; border:0; border-radius:8px; background:var(--red); color:#fff; font:inherit; font-weight:600; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:8px; }
+button.go:hover { background:#a33c25; } button.go[disabled] { opacity:.6; cursor:default; }
+.alt { text-align:center; font-size:12px; color:var(--mut); margin-top:16px; }
+.note { border-top:1px solid var(--line); padding-top:14px; margin-top:20px; font-size:11px; color:var(--mut); } .note b { display:block; color:var(--ink); font-size:11px; margin-bottom:3px; }
+.info { background:var(--green-soft); border-radius:8px; padding:12px 14px; font-size:11px; color:#4b5a52; margin-bottom:16px; } .info b { display:block; color:#2f5a44; margin-bottom:2px; }
+.alert { border-radius:8px; padding:10px 14px; margin-bottom:16px; font-size:12px; background:#fbe9e4; color:#8c2f1b; border:1px solid #f2d5cd; }
+.alert.ok { background:var(--green-soft); color:#2f5a44; border-color:#d3e5da; }
+.hidden { display:none !important; }
+footer { display:flex; justify-content:space-between; padding:18px clamp(16px,8vw,100px); font-size:10px; color:var(--mut); }
+footer a { color:var(--mut); font-weight:400; margin-left:12px; }
+@media (max-width:540px) { .row { flex-direction:column; gap:0; } main { padding-top:28px; } footer { flex-direction:column; gap:8px; } }
