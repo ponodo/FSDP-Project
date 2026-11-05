@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Results &amp; promotions · Aikido Shinjukai</title>
+    <link rel="stylesheet" href="pages.css" />
+    <link rel="stylesheet" href="grading.css" />
+  </head>
+  <body data-page="results" data-crumbs="Administration|Results &amp; promotions">
+    <div class="app">
+      <aside class="sidebar" id="sidebar"></aside>
+      <div>
+        <header class="topbar" id="topbar"></header>
+        <main class="page">
+          <div class="page-head">
+            <div>
+              <h1>Results &amp; belt promotions</h1>
+              <p class="sub">
+                Review outcomes, update belt levels and celebrate each
+                successful grading.
+              </p>
+            </div>
+            <div class="head-pills" id="headPills"></div>
+          </div>
+
+          <div id="error"></div>
+          <div id="banner"></div>
+
+          <div class="filters">
+            <select id="session" aria-label="Grading session">
+              <option value="">Loading sessions…</option>
+            </select>
+            <select id="resultFilter" aria-label="Result">
+              <option value="">All results</option>
+              <option value="Pass">Pass</option>
+              <option value="Reassess">Re-assess</option>
+              <option value="Fail">Fail</option>
+            </select>
+            <span class="code-tag hidden" id="sessionCode"></span>
+          </div>
+
+          <div class="g-grid">
+            <!-- left: session results -->
+            <div class="card panel-blue">
+              <div class="card-head">
+                <h2>Session results</h2>
+                <button class="link-btn" id="importBtn" title="CSV import - coming soon">
+                  Import results
+                </button>
+              </div>
+              <div class="tabs" role="tablist">
+                <button class="tab on" data-tab="review" role="tab">
+                  Needs review · <span id="countReview">0</span>
+                </button>
+                <button class="tab" data-tab="published" role="tab">
+                  Published · <span id="countPublished">0</span>
+                </button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>
+                        <input type="checkbox" id="selectAll" aria-label="Select all" />
+                      </th>
+                      <th>Student</th>
+                      <th>Current → new level</th>
+                      <th>Result</th>
+                      <th>Email / action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="resultRows">
+                    <tr><td colspan="5" class="empty">Loading…</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-foot" id="tableFoot"></div>
+            </div>
+
+            <!-- right: publish summary + email preview -->
+            <div class="g-side">
+              <div class="card summary-card" id="summaryCard">
+                <div class="card-head" style="margin-bottom: 6px">
+                  <h2>Before you publish</h2>
+                </div>
+                <span class="tag red" id="selTag">0 selected results</span>
+                <div class="big" id="sumHeadline">Select results to publish.</div>
+                <div class="kv"><span>Passing results</span><b id="sumPass">0</b></div>
+                <div class="kv"><span>Re-assessment</span><b id="sumReassess">0</b></div>
+                <div class="kv"><span>Fail</span><b id="sumFail">0</b></div>
+                <div class="kv"><span>Belt records to update</span><b id="sumBelts">0</b></div>
+                <div class="kv"><span>Emails to queue</span><b id="sumEmails">0</b></div>
+                <p class="fine">
+                  Publishing saves these results to the student records and
+                  queues congratulatory emails for successful promotions.
+                </p>
+                <label class="check-line">
+                  <input type="checkbox" id="sendEmails" checked />
+                  Send promotion emails
+                </label>
+                <button class="btn primary block" id="publishBtn" disabled>
+                  Publish reviewed results
+                </button>
+              </div>
+
+              <div class="card email-card">
+                <div class="card-head" style="margin-bottom: 10px">
+                  <h2>Email preview</h2>
+                </div>
+                <div id="emailPreview" class="st-mut" style="font-size: 13px">
+                  Select a passing result to preview its email.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- published notification status -->
+          <div class="card">
+            <div class="card-head">
+              <h2>Published notification status</h2>
+              <span class="stamp" id="notifStamp"></span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Updated belt level</th>
+                    <th>Notification</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="notifRows">
+                  <tr><td colspan="4" class="empty">Loading…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Enter & review result -->
+    <dialog id="editDlg">
+      <form method="dialog" id="editForm">
+        <h2>Enter &amp; review result</h2>
+        <p class="sub" id="editWho"></p>
+        <div class="belt-pair">
+          <div class="cur">Current belt<b id="editCurrent"></b></div>
+          <div class="new">New belt<b id="editNew"></b></div>
+        </div>
+        <div class="form-row">
+          <label for="editResult">Result *</label>
+          <select id="editResult" required>
+            <option value="Pass">Pass</option>
+            <option value="Reassess">Re-assess</option>
+            <option value="Fail">Fail</option>
+          </select>
+        </div>
+        <div class="form-row" id="newLevelRow">
+          <label for="editLevel">New level *</label>
+          <select id="editLevel"></select>
+          <span class="hint">Only passing results change a student's belt level.</span>
+        </div>
+        <div class="form-row">
+          <label for="editFeedback">Examiner feedback</label>
+          <textarea id="editFeedback" maxlength="500"></textarea>
+        </div>
+        <div id="editError"></div>
+        <div class="dlg-btns">
+          <button type="button" class="btn" id="editCancel">Cancel</button>
+          <button type="submit" class="btn primary" id="editSave">Save result</button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Update & resend email -->
+    <dialog id="resendDlg">
+      <form method="dialog" id="resendForm">
+        <h2>Update &amp; resend</h2>
+        <p class="sub" id="resendWho"></p>
+        <div class="form-row">
+          <label for="resendEmail">Email address</label>
+          <input type="email" id="resendEmail" required maxlength="120" />
+          <span class="hint">The student's record is updated with this address.</span>
+        </div>
+        <div id="resendError"></div>
+        <div class="dlg-btns">
+          <button type="button" class="btn" id="resendCancel">Cancel</button>
+          <button type="submit" class="btn primary">Resend email</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="Shell.js"></script>
+    <script src="Results.js"></script>
+  </body>
+</html>
