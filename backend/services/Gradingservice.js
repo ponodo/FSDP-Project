@@ -1,6 +1,6 @@
 const model = require("../models/Gradingmodel");
 const httpError = require("../utils/HttpError");
-const buildPromotionEmail = require("../utils/promotionEmail");
+const buildPromotionEmail = require("../utils/PromotionEmail");
 
 const TYPES = ["Mass", "Private"];
 const toId = (v) => (/^\d+$/.test(String(v || "")) ? parseInt(v, 10) : null);
