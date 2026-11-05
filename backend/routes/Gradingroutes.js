@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const c = require("../controllers/Gradingcontroller");
-const v = require("../middlewares/validateGrading");
+const v = require("../middlewares/Validategrading");
 
 // fixed paths first, then /:id
 router.get("/options", c.options);
