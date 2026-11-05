@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Schedule grading session · Aikido Shinjukai</title>
+    <link rel="stylesheet" href="pages.css" />
+    <link rel="stylesheet" href="grading.css" />
+  </head>
+  <body data-page="grading" data-crumbs="Administration|Grading sessions">
+    <div class="app">
+      <aside class="sidebar" id="sidebar"></aside>
+      <div>
+        <header class="topbar" id="topbar"></header>
+        <main class="page">
+          <a class="back" href="Grading-sessions.html">← Grading sessions</a>
+          <div class="page-head">
+            <div>
+              <h1 id="pageTitle">Schedule grading session</h1>
+              <p class="sub" id="pageSub">
+                Plan a mass or private grading, with every examiner and space
+                accounted for.
+              </p>
+            </div>
+          </div>
+
+          <div id="error"></div>
+
+          <div class="g-grid">
+            <form class="card" id="form" novalidate>
+              <div class="card-head"><h2>Session details</h2></div>
+
+              <div class="seg" role="group" aria-label="Session type">
+                <button type="button" data-type="Mass" class="on">Mass grading</button>
+                <button type="button" data-type="Private">Private grading</button>
+              </div>
+
+              <div class="form-grid">
+                <div class="form-row full hidden" id="studentRow">
+                  <label for="studentId">Student *</label>
+                  <select id="studentId"><option value="">Select a student…</option></select>
+                  <span class="hint">Private gradings have one student and a capacity of 1.</span>
+                </div>
+                <div class="form-row full">
+                  <label for="title">Session name *</label>
+                  <input id="title" maxlength="80" required placeholder="e.g. November mass grading" />
+                  <span class="hint hidden" id="codeHint"></span>
+                </div>
+                <div class="form-row">
+                  <label for="centreId">Centre *</label>
+                  <select id="centreId" required></select>
+                </div>
+                <div class="form-row">
+                  <label for="venue">Training space *</label>
+                  <input id="venue" list="venueList" maxlength="50" required placeholder="e.g. Main hall" />
+                  <datalist id="venueList"></datalist>
+                </div>
+                <div class="form-row full">
+                  <label for="sessionDate">Date *</label>
+                  <input type="date" id="sessionDate" required />
+                </div>
+                <div class="form-row">
+                  <label for="startTime">Start time *</label>
+                  <input type="time" id="startTime" required />
+                </div>
+                <div class="form-row">
+                  <label for="endTime">End time *</label>
+                  <input type="time" id="endTime" required />
+                </div>
+                <div class="form-row">
+                  <label for="capacity">Capacity *</label>
+                  <input type="number" id="capacity" min="1" max="200" required />
+                </div>
+                <div class="form-row">
+                  <label for="fee">Fee per student (SGD)</label>
+                  <input type="number" id="fee" min="0" max="10000" step="0.01" />
+                </div>
+                <div class="form-row full">
+                  <label for="registrationCloses">Registration closes</label>
+                  <input type="date" id="registrationCloses" />
+                </div>
+                <div class="form-row">
+                  <label for="leadExaminerId">Lead examiner *</label>
+                  <select id="leadExaminerId" required></select>
+                </div>
+                <div class="form-row">
+                  <label for="supportingExaminerId">Supporting examiner</label>
+                  <select id="supportingExaminerId"><option value="">None</option></select>
+                </div>
+              </div>
+
+              <div class="avail wait" id="availBox">
+                <b>Availability</b>Fill in the date, time, space and examiner to check for conflicts.
+              </div>
+              <div id="formError"></div>
+              <button type="submit" class="btn primary block" id="saveBtn">Review &amp; save session</button>
+            </form>
+
+            <div class="g-side">
+              <div class="card review-card panel-blue">
+                <div class="card-head" style="margin-bottom: 6px"><h2>Review session</h2></div>
+                <span class="tag navy" id="rvTag">Mass · New</span>
+                <h3 id="rvTitle">Untitled session</h3>
+                <div class="kv"><span>When</span><b id="rvWhen">-</b></div>
+                <div class="kv"><span>Where</span><b id="rvWhere">-</b></div>
+                <div class="kv"><span id="rvCapLabel">Capacity</span><b id="rvCap">-</b></div>
+                <div class="kv"><span>Examiners</span><b id="rvExam">-</b></div>
+                <div class="kv"><span>Fee</span><b

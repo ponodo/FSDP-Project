@@ -919,3 +919,433 @@ dialog .actions {
     grid-template-columns: 1fr;
   }
 }
+
+/* Grading & belt promotion pages (loaded after pages.css) */
+
+/* let wide tables scroll inside their card instead of stretching the page on mobile */
+.app > * {
+  min-width: 0;
+}
+
+.head-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: #f1eee8;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.tag.green {
+  background: var(--green-soft);
+  color: var(--green);
+}
+.tag.red {
+  background: var(--red-soft);
+  color: var(--red);
+}
+.tag.navy {
+  background: var(--lav);
+  color: var(--navy);
+}
+.code-tag {
+  font-size: 11px;
+  color: var(--mut);
+  background: #f1eee8;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+/* layout: main card (left) + side panel (right) */
+.g-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(280px, 1fr);
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 16px;
+}
+.g-grid > *,
+.g-side > * {
+  min-width: 0;
+}
+.g-side {
+  display: grid;
+  gap: 16px;
+}
+
+/* results table */
+.res-row {
+  cursor: pointer;
+}
+.res-row:hover td {
+  background: #f5f7fd;
+}
+.res-row.sel td {
+  background: #e9edf8;
+}
+.res-row td:first-child {
+  width: 34px;
+}
+.stu b {
+  display: block;
+  font-weight: 600;
+}
+.stu small {
+  color: var(--mut);
+  font-size: 11px;
+}
+.belt-move {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.belt-move .arrow {
+  color: var(--mut);
+}
+.belt-move .up {
+  font-weight: 600;
+  color: var(--green);
+}
+.r-Pass {
+  color: var(--green);
+  font-weight: 600;
+}
+.r-Reassess {
+  color: #9a6a12;
+  font-weight: 600;
+}
+.r-Fail {
+  color: var(--red);
+  font-weight: 600;
+}
+.r-none {
+  color: var(--mut);
+  font-style: italic;
+}
+.st-ok {
+  color: var(--green);
+  font-weight: 600;
+}
+.st-wait {
+  color: #9a6a12;
+  font-weight: 600;
+}
+.st-bad {
+  color: var(--red);
+  font-weight: 600;
+}
+.st-mut {
+  color: var(--mut);
+}
+.table-foot {
+  font-size: 11px;
+  color: var(--mut);
+  padding-top: 12px;
+}
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--red);
+  cursor: pointer;
+}
+
+/* publish summary */
+.summary-card {
+  background: var(--green-soft);
+  border-color: #d3e5da;
+}
+.summary-card .big {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 10px 0 14px;
+}
+.summary-card .kv {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid #d3e5da;
+}
+.summary-card .kv b {
+  font-weight: 600;
+}
+.summary-card .fine {
+  margin: 12px 0;
+}
+.check-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 14px;
+  cursor: pointer;
+}
+
+/* email preview */
+.email-card .to {
+  font-size: 11px;
+  color: var(--mut);
+  margin-bottom: 10px;
+  word-break: break-all;
+}
+.email-card .subj {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.email-card .body {
+  white-space: pre-line;
+  font-size: 13px;
+  color: #4a4641;
+}
+
+/* dialogs + form rows */
+dialog h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+dialog .sub {
+  font-size: 12px;
+  margin-bottom: 14px;
+}
+.form-row {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.form-row label {
+  font-size: 12px;
+  font-weight: 600;
+}
+.form-row select,
+.form-row input,
+.form-row textarea {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 12px;
+  min-height: 38px;
+  font: inherit;
+  width: 100%;
+}
+.form-row textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+.form-row .hint {
+  font-size: 11px;
+  color: var(--mut);
+}
+.belt-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.belt-pair div {
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 11px;
+  color: var(--mut);
+}
+.belt-pair b {
+  display: block;
+  font-size: 16px;
+  color: var(--ink);
+  margin-top: 4px;
+}
+.belt-pair .cur {
+  background: var(--yellow);
+}
+.belt-pair .new {
+  background: var(--green-soft);
+}
+.dlg-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+@media (max-width: 960px) {
+  .g-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* screen 06: session list */
+.sess-list {
+  display: grid;
+}
+.sess {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 10px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  border-radius: 8px;
+}
+.sess:hover {
+  background: #f5f7fd;
+}
+.sess.sel {
+  background: #e9edf8;
+}
+.datebox {
+  text-align: center;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 6px 0;
+}
+.datebox b {
+  display: block;
+  font-size: 18px;
+  line-height: 1.1;
+}
+.datebox small {
+  font-size: 10px;
+  color: var(--mut);
+  letter-spacing: 0.5px;
+}
+.sess .info b {
+  display: block;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sess .info small {
+  display: block;
+  color: var(--mut);
+  font-size: 12px;
+}
+.sess .right {
+  text-align: right;
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+  font-size: 12px;
+  color: var(--mut);
+}
+.ready-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* availability box (screens 06 + 07) */
+.avail {
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 12px;
+  margin: 14px 0;
+}
+.avail b {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+.avail.ok {
+  background: var(--green-soft);
+  color: #2f5a44;
+}
+.avail.bad {
+  background: var(--yellow);
+  color: #7a5410;
+}
+.avail.wait {
+  background: #f1eee8;
+  color: var(--mut);
+}
+.avail ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+/* ---------- screen 07: session form ---------- */
+.seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.seg button {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--mut);
+}
+.seg button.on {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+  font-weight: 600;
+}
+.seg button:disabled {
+  cursor: not-allowed;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+}
+.form-grid .full {
+  grid-column: 1 / -1;
+}
+.form-row input:disabled {
+  background: #f7f5f1;
+  color: var(--mut);
+}
+.review-card .kv,
+.details-card .kv {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  padding: 7px 0;
+}
+.review-card .kv span,
+.details-card .kv span {
+  color: var(--mut);
+}
+.review-card .kv b,
+.details-card .kv b {
+  text-align: right;
+  font-weight: 600;
+}
+.details-card h3,
+.review-card h3 {
+  margin: 10px 0 12px;
+  font-size: 18px;
+}
+
+@media (max-width: 520px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .sess {
+    grid-template-columns: 46px minmax(0, 1fr);
+  }
+  .sess .right {
+    grid-column: 2;
+    justify-items: start;
+    text-align: left;
+    grid-auto-flow: column;
+    justify-content: start;
+    align-items: center;
+  }
+}
