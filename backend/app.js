@@ -11,8 +11,8 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 const overviewPath = path.join(__dirname, "routes", "overviewRoutes.js");
 if (fs.existsSync(overviewPath)) app.use("/api", require(overviewPath));
 
-app.use("/api/finance", require("./routes/financeRoutes"));
-app.use("/api/documents", require("./routes/documentRoutes"));
+app.use("/api/finance", require("./routes/Financeroutes"));
+app.use("/api/documents", require("./routes/Documentroutes"));
 
 app.use("/api", (req, res) => res.status(404).json({ error: "Not found" }));
 app.use((err, req, res, next) => {
