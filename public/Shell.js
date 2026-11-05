@@ -96,8 +96,8 @@ window.icon = icon;
 const NAV = [
   ["overview", "Overview", "index.html"],
   ["schedule", "Class schedule", "#"],
-  ["grading", "Grading sessions", "#"],
-  ["results", "Results & promotions", "#"],
+  ["grading", "Grading sessions", "Grading-sessions.html"],
+  ["results", "Results & promotions", "Results.html"],
   ["payments", "Payments", "payments.html"],
   ["documents", "Documents & records", "documents.html"],
   ["financial", "Financial reports", "financial-reports.html"],
