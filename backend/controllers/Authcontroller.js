@@ -1,5 +1,4 @@
-// const service = require("../services/Authservice");
-const service = require("./Authservice");
+const service = require("../services/Authservice");
 const { COOKIE, cookieOptions, sign } = require("../middlewares/Auth");
 
 const pub = (u) => ({ userId: u.userId, fullName: u.fullName, role: u.role, centreId: u.centreId ?? null });
