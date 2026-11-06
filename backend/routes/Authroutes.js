@@ -1,9 +1,6 @@
 const router = require("express").Router();
-// const c = require("../controllers/Authcontroller");
-const c = require("./Authcontroller");
-// const { requireAuth } = require("../middlewares/Auth");
-const { requireAuth } = require("./Auth");
-
+const c = require("../controllers/Authcontroller");
+const { requireAuth } = require("../middlewares/Auth");
 
 router.get("/centres", c.centres);          // public: registration dropdown
 router.post("/register", c.register);

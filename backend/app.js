@@ -2,10 +2,15 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
+const { requireAdmin } = require("./middlewares/Auth");
+
 
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "..", "public")));
+
+app.use("/api/auth", require("./routes/Authroutes"));
+app.use("/api", require("./routes/Overviewroutes"));
 
 // overview routes (only mounted if the file exists in your copy)
 const overviewPath = path.join(__dirname, "routes", "overviewRoutes.js");

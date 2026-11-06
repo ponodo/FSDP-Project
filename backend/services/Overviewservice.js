@@ -1,5 +1,4 @@
-// const model = require("../models/Overviewmodel");
-const model = require("./Overviewmodel");
+const model = require("../models/Overviewmodel");
 
 const centreOf = (q) => (/^\d+$/.test(q.centreId || "") ? parseInt(q.centreId, 10) : null);
 

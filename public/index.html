@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overview · Aikido Shinjukai</title>
+  <link rel="stylesheet" href="pages.css">
+  <link rel="stylesheet" href="overview.css">
+</head>
+<body data-page="overview" data-crumbs="Administration|Overview">
+<div class="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div>
+    <header class="topbar" id="topbar"></header>
+    <main class="page">
+      <div class="page-head greet">
+        <div>
+          <h1 id="greeting">Good day.</h1>
+          <p class="sub" id="today"></p>
+          <p class="fine" style="margin-top:10px">All amounts in SGD</p>
+        </div>
+        <select id="centre" aria-label="Centre" style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 12px;min-height:38px">
+          <option value="">All centres</option>
+        </select>
+      </div>
+
+      <div id="error"></div>
+
+      <div id="content">
+        <div class="kpis">
+          <div class="kpi lav"><div class="lbl">Collected this month</div><div class="val" id="kCollected">–</div><div class="note" id="kCollectedN"></div></div>
+          <div class="kpi yel"><div class="lbl">Outstanding fees</div><div class="val" id="kOut">–</div><div class="note" id="kOutN"></div></div>
+        </div>
+
+        <div class="ov-grid">
+          <div class="card">
+            <div class="cls-head"><h2>Today's classes</h2><a href="#" style="font-size:12px;font-weight:600">View schedule →</a></div>
+            <div class="cls-date"><span id="clsDate"></span><span class="badge" id="clsCount"></span></div>
+            <div id="classes"></div>
+          </div>
+
+          <div class="ov-side">
+            <div class="card attn">
+              <h2>Needs your attention</h2>
+              <p>A few small actions to keep the day moving.</p>
+              <div id="attention"></div>
+            </div>
+            <div class="card up" id="grading"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="shell.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

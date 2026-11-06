@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
-// const model = require("../models/Authmodel");
-const model = require("./Authmodel");
+const model = require("../models/Authmodel");
 
 const fail = (message, field, status = 400) => Object.assign(new Error(message), { status, field });
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
