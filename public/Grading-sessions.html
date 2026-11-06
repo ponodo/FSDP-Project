@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Grading sessions · Aikido Shinjukai</title>
+    <link rel="stylesheet" href="pages.css" />
+    <link rel="stylesheet" href="grading.css" />
+  </head>
+  <body data-page="grading" data-crumbs="Administration|Grading sessions">
+    <div class="app">
+      <aside class="sidebar" id="sidebar"></aside>
+      <div>
+        <header class="topbar" id="topbar"></header>
+        <main class="page">
+          <div class="page-head">
+            <div>
+              <h1>Grading sessions</h1>
+              <p class="sub">
+                Coordinate mass and private gradings, with every examiner and
+                space accounted for.
+              </p>
+            </div>
+            <a class="btn primary" href="Grading-setup.html">+ New grading session</a>
+          </div>
+
+          <div id="error"></div>
+          <div id="savedMsg"></div>
+
+          <div class="filters">
+            <select id="term" aria-label="Term"><option value="">All terms</option></select>
+            <select id="centre" aria-label="Centre"><option value="">All centres</option></select>
+            <select id="type" aria-label="Session type">
+              <option value="">All session types</option>
+              <option value="Mass">Mass</option>
+              <option value="Private">Private</option>
+            </select>
+            <input class="grow" type="search" id="search" placeholder="Search session or code…" aria-label="Search" />
+          </div>
+
+          <div class="g-grid">
+            <div>
+              <div class="card panel-blue">
+                <div class="card-head">
+                  <h2 id="listTitle">Upcoming sessions</h2>
+                </div>
+                <div class="tabs" role="tablist">
+                  <button class="tab on" data-tab="upcoming" role="tab">
+                    Upcoming · <span id="countUpcoming">0</span>
+                  </button>
+                  <button class="tab" data-tab="completed" role="tab">
+                    Completed · <span id="countCompleted">0</span>
+                  </button>
+                </div>
+                <div class="sess-list" id="sessList">
+                  <div class="empty">Loading…</div>
+                </div>
+              </div>
+
+              <div id="readyBanner" style="margin-top: 16px"></div>
+            </div>
+
+            <div class="card details-card" id="details">
+              <div class="card-head" style="margin-bottom: 0"><h2>Session details</h2></div>
+              <p class="st-mut" style="font-size: 13px">Select a session to see its details.</p>
+            </div>
+          </div>
+          <p class="foot-note">
+            Participants and fee records are linked to each session. Results are
+            reviewed separately on Results &amp; promotions.
+          </p>
+        </main>
+      </div>
+    </div>
+    <script src="Shell.js"></script>
+    <script src="Grading-sessions.js"></script>
+  </body>
+</html>
