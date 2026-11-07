@@ -6,6 +6,12 @@ exports.listSessions = async (req, res) =>
   res.json(await service.listSessions(req.query));
 exports.getSession = async (req, res) =>
   res.json(await service.getSession(req.params.id));
+exports.checkAvailability = async (req, res) =>
+  res.json(await service.checkAvailability(req.body));
+exports.createSession = async (req, res) =>
+  res.status(201).json(await service.createSession(req.body));
+exports.updateSession = async (req, res) =>
+  res.json(await service.updateSession(req.params.id, req.body));
 exports.pendingSummary = async (req, res) =>
   res.json(await service.pendingSummary());
 

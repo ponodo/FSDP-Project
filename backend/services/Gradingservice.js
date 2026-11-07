@@ -43,6 +43,79 @@ async function pendingSummary() {
 
 const getOptions = () => model.getOptions();
 
+/* SCHEDULE / EDIT SESSIONS (screen 07) */
+
+const todayYmd = () => new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD, server local time
+
+// Checks that don't need the database
+function checkSessionRules(b) {
+  if (b.endTime <= b.startTime) throw httpError(400, "End time must be after start time");
+  if (b.registrationCloses && b.registrationCloses > b.sessionDate)
+    throw httpError(400, "Registration must close on or before the session date");
+  if (b.supportingExaminerId && b.supportingExaminerId === b.leadExaminerId)
+    throw httpError(400, "Supporting examiner must be different from the lead examiner");
+}
+
+async function checkReferences(b) {
+  const checks = [model.centreExists(b.centreId), model.instructorExists(b.leadExaminerId)];
+  if (b.supportingExaminerId) checks.push(model.instructorExists(b.supportingExaminerId));
+  const [centre, lead, support = true] = await Promise.all(checks);
+  if (!centre) throw httpError(400, "Selected centre does not exist");
+  if (!lead || !support) throw httpError(400, "Selected examiner does not exist");
+}
+
+async function assertNoConflicts(b) {
+  const conflicts = await model.findConflicts(b);
+  if (conflicts.length) {
+    const c = conflicts[0];
+    throw httpError(409, `Conflict: ${c.who} - ${c.title} (${c.startTime}-${c.endTime})`);
+  }
+}
+
+// POST /sessions/check-availability
+async function checkAvailability(b) {
+  if (b.endTime <= b.startTime) return { available: false, conflicts: [] };
+  const conflicts = await model.findConflicts(b);
+  return { available: conflicts.length === 0, conflicts };
+}
+
+// POST /sessions
+async function createSession(b) {
+  checkSessionRules(b);
+  if (b.sessionDate < todayYmd()) throw httpError(400, "Session date can't be in the past");
+  await checkReferences(b);
+
+  let student = null;
+  if (b.type === "Private") {
+    student = await model.getStudentForGrading(b.studentId);
+    if (!student) throw httpError(400, "Selected student does not exist");
+    if (!student.nextBeltId) throw httpError(400, `${student.name} is already at the highest belt`);
+    b.capacity = 1; // private grading = one student
+  }
+
+  await assertNoConflicts(b);
+  const sessionId = await model.createSession(b, student);
+  return model.getSession(sessionId);
+}
+
+// PUT /sessions/:id  (type can't be changed after creation)
+async function updateSession(id, b) {
+  const existing = await getSession(id);
+  if (!["Draft", "Confirmed"].includes(existing.status))
+    throw httpError(409, "Completed or cancelled sessions can't be edited");
+
+  b.type = existing.type;
+  if (existing.type === "Private") b.capacity = 1;
+  checkSessionRules(b);
+  if (b.capacity < existing.registered)
+    throw httpError(400, `Capacity can't be lower than the ${existing.registered} students already registered`);
+  await checkReferences(b);
+
+  await assertNoConflicts({ ...b, excludeSessionId: existing.sessionId });
+  await model.updateSession(existing.sessionId, b);
+  return model.getSession(existing.sessionId);
+}
+
 /* RESULTS */
 
 const resultSessions = () => model.sessionsWithResults();
@@ -153,6 +226,9 @@ module.exports = {
   getSession,
   pendingSummary,
   getOptions,
+  checkAvailability,
+  createSession,
+  updateSession,
   resultSessions,
   listResults,
   getResult,

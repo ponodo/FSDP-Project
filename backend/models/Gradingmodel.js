@@ -62,8 +62,15 @@ async function getSession(id) {
   const r = await pool
     .request()
     .input("id", sql.Int, id)
-    .query(`${SESSION_SELECT} WHERE s.sessionId = @id`);
-  return r.recordset[0] || null;
+    .query(`${SESSION_SELECT} WHERE s.sessionId = @id;
+            SELECT st.studentId AS id, st.name, st.memberCode, cb.name AS currentBelt, tb.name AS targetBelt
+            FROM GradingRegistrations reg
+            JOIN Students st ON st.studentId = reg.studentId
+            JOIN BeltRanks cb ON cb.beltId = reg.currentBeltId
+            JOIN BeltRanks tb ON tb.beltId = reg.targetBeltId
+            WHERE reg.sessionId = @id ORDER BY st.name`);
+  const s = r.recordsets[0][0];
+  return s ? { ...s, students: r.recordsets[1] } : null;
 }
 
 // For the "October results are ready" banner: sessions with results still in Draft
@@ -89,9 +96,161 @@ async function getOptions() {
     SELECT termId AS id, name FROM Terms ORDER BY startDate DESC;
     SELECT centreId AS id, name FROM Centres ORDER BY name;
     SELECT instructorId AS id, name FROM Instructors ORDER BY name;
-    SELECT beltId AS id, name, colour, rankOrder FROM BeltRanks ORDER BY rankOrder;`);
-  const [terms, centres, instructors, belts] = r.recordsets;
-  return { terms, centres, instructors, belts, types: ["Mass", "Private"] };
+    SELECT beltId AS id, name, colour, rankOrder FROM BeltRanks ORDER BY rankOrder;
+    SELECT st.studentId AS id, st.name, st.memberCode, st.centreId, b.name AS currentBelt
+    FROM Students st JOIN BeltRanks b ON b.beltId = st.currentBeltId
+    WHERE b.rankOrder < (SELECT MAX(rankOrder) FROM BeltRanks)   -- can still be promoted
+    ORDER BY st.name;
+    SELECT DISTINCT centreId, venue FROM (
+      SELECT centreId, venue FROM Classes UNION SELECT centreId, venue FROM GradingSessions
+    ) v WHERE venue IS NOT NULL ORDER BY venue;`);
+  const [terms, centres, instructors, belts, students, spaces] = r.recordsets;
+  return { terms, centres, instructors, belts, students, spaces, types: ["Mass", "Private"] };
+}
+
+/* ===================== SCHEDULE / EDIT (screen 07) ===================== */
+
+function bindSlot(req, b) {
+  return req
+    .input("centreId", sql.Int, b.centreId)
+    .input("venue", sql.VarChar(50), b.venue)
+    .input("date", sql.VarChar(10), b.sessionDate)
+    .input("start", sql.VarChar(5), b.startTime)
+    .input("end", sql.VarChar(5), b.endTime)
+    .input("lead", sql.Int, b.leadExaminerId)
+    .input("support", sql.Int, b.supportingExaminerId || null)
+    .input("excludeId", sql.Int, b.excludeSessionId || null);
+}
+
+// Other gradings and classes that clash with this time slot (same space or same examiner)
+async function findConflicts(b) {
+  const pool = await getPool();
+  const r = await bindSlot(pool.request(), b).query(`
+    DECLARE @s TIME = CAST(@start AS time), @e TIME = CAST(@end AS time), @d DATE = CAST(@date AS date);
+
+    -- other grading sessions
+    SELECT 'space' AS kind, c.name + ' - ' + g.venue AS who, g.title,
+           CONVERT(varchar(5), g.startTime, 108) AS startTime, CONVERT(varchar(5), g.endTime, 108) AS endTime
+    FROM GradingSessions g JOIN Centres c ON c.centreId = g.centreId
+    WHERE g.sessionDate = @d AND g.sessionStatus IN ('Draft','Confirmed')
+      AND (@excludeId IS NULL OR g.sessionId <> @excludeId)
+      AND g.startTime < @e AND @s < g.endTime
+      AND g.centreId = @centreId AND g.venue = @venue
+    UNION ALL
+    SELECT 'examiner', i.name, g.title,
+           CONVERT(varchar(5), g.startTime, 108), CONVERT(varchar(5), g.endTime, 108)
+    FROM GradingSessions g
+    JOIN Instructors i ON i.instructorId IN (g.leadExaminerId, g.supportingExaminerId)
+    WHERE g.sessionDate = @d AND g.sessionStatus IN ('Draft','Confirmed')
+      AND (@excludeId IS NULL OR g.sessionId <> @excludeId)
+      AND g.startTime < @e AND @s < g.endTime
+      AND i.instructorId IN (@lead, @support)
+
+    -- classes in the same space or taught by the examiner
+    UNION ALL
+    SELECT 'space', c.name + ' - ' + cl.venue, cl.title,
+           CONVERT(varchar(5), cl.startTime, 108),
+           CONVERT(varchar(5), DATEADD(MINUTE, cl.durationMin, cl.startTime), 108)
+    FROM Classes cl JOIN Centres c ON c.centreId = cl.centreId
+    WHERE cl.classDate = @d AND cl.centreId = @centreId AND cl.venue = @venue
+      AND cl.startTime < @e AND @s < DATEADD(MINUTE, cl.durationMin, cl.startTime)
+    UNION ALL
+    SELECT 'examiner', i.name, cl.title,
+           CONVERT(varchar(5), cl.startTime, 108),
+           CONVERT(varchar(5), DATEADD(MINUTE, cl.durationMin, cl.startTime), 108)
+    FROM Classes cl JOIN Instructors i ON i.instructorId = cl.instructorId
+    WHERE cl.classDate = @d AND cl.instructorId IN (@lead, @support)
+      AND cl.startTime < @e AND @s < DATEADD(MINUTE, cl.durationMin, cl.startTime)
+    ORDER BY startTime`);
+  return r.recordset;
+}
+
+async function getStudentForGrading(studentId) {
+  const pool = await getPool();
+  const r = await pool.request().input("id", sql.Int, studentId).query(`
+    SELECT st.studentId, st.name, st.centreId, st.currentBeltId,
+           (SELECT TOP 1 nb.beltId FROM BeltRanks nb
+            WHERE nb.rankOrder > b.rankOrder ORDER BY nb.rankOrder) AS nextBeltId
+    FROM Students st JOIN BeltRanks b ON b.beltId = st.currentBeltId
+    WHERE st.studentId = @id`);
+  return r.recordset[0] || null;
+}
+
+function bindSession(req, b) {
+  return bindSlot(req, b)
+    .input("type", sql.VarChar(10), b.type)
+    .input("title", sql.VarChar(80), b.title)
+    .input("capacity", sql.Int, b.capacity)
+    .input("fee", sql.Decimal(10, 2), b.fee || 0)
+    .input("closes", sql.VarChar(10), b.registrationCloses || null);
+}
+
+// Insert the session; a private grading also registers its one student (in one transaction)
+async function createSession(b, student) {
+  const pool = await getPool();
+  const tx = new sql.Transaction(pool);
+  await tx.begin();
+  try {
+    const r = await bindSession(new sql.Request(tx), b).query(`
+      DECLARE @d DATE = CAST(@date AS date);
+      INSERT INTO GradingSessions
+        (centreId, type, title, sessionDate, startTime, endTime, venue, leadExaminer, capacity, registered,
+         code, termId, fee, registrationCloses, leadExaminerId, supportingExaminerId, sessionStatus)
+      OUTPUT INSERTED.sessionId
+      VALUES (@centreId, @type, @title, @d, CAST(@start AS time), CAST(@end AS time), @venue,
+        (SELECT name FROM Instructors WHERE instructorId = @lead), @capacity, 0,
+        CONCAT('GR-', FORMAT(@d, 'yyyy-MMdd')),
+        (SELECT TOP 1 termId FROM Terms WHERE @d BETWEEN startDate AND endDate ORDER BY startDate DESC),
+        @fee, CAST(@closes AS date), @lead, @support, 'Confirmed')`);
+    const sessionId = r.recordset[0].sessionId;
+
+    if (student) {
+      await new sql.Request(tx)
+        .input("sessionId", sql.Int, sessionId)
+        .input("studentId", sql.Int, student.studentId)
+        .input("current", sql.Int, student.currentBeltId)
+        .input("target", sql.Int, student.nextBeltId)
+        .query(`INSERT INTO GradingRegistrations(sessionId, studentId, currentBeltId, targetBeltId)
+                VALUES (@sessionId, @studentId, @current, @target);
+                UPDATE GradingSessions SET registered = 1 WHERE sessionId = @sessionId;`);
+    }
+    await tx.commit();
+    return sessionId;
+  } catch (e) {
+    await tx.rollback();
+    throw e;
+  }
+}
+
+async function updateSession(id, b) {
+  const pool = await getPool();
+  await bindSession(pool.request(), b)
+    .input("id", sql.Int, id)
+    .query(`
+      DECLARE @d DATE = CAST(@date AS date);
+      UPDATE GradingSessions SET
+        title = @title, centreId = @centreId, venue = @venue, sessionDate = @d,
+        startTime = CAST(@start AS time), endTime = CAST(@end AS time),
+        capacity = @capacity, fee = @fee, registrationCloses = CAST(@closes AS date),
+        leadExaminerId = @lead, supportingExaminerId = @support,
+        leadExaminer = (SELECT name FROM Instructors WHERE instructorId = @lead),
+        code = CONCAT('GR-', FORMAT(@d, 'yyyy-MMdd')),
+        termId = (SELECT TOP 1 termId FROM Terms WHERE @d BETWEEN startDate AND endDate ORDER BY startDate DESC)
+      WHERE sessionId = @id`);
+}
+
+async function instructorExists(id) {
+  const pool = await getPool();
+  const r = await pool.request().input("id", sql.Int, id)
+    .query("SELECT 1 AS ok FROM Instructors WHERE instructorId = @id");
+  return r.recordset.length > 0;
+}
+
+async function centreExists(id) {
+  const pool = await getPool();
+  const r = await pool.request().input("id", sql.Int, id)
+    .query("SELECT 1 AS ok FROM Centres WHERE centreId = @id");
+  return r.recordset.length > 0;
 }
 
 /* ===================== RESULTS (screen 08) ===================== */
@@ -359,6 +518,12 @@ async function markAttemptFailed(id, error, maxAttempts, retryMinutes, permanent
 }
 
 module.exports = {
+  findConflicts,
+  getStudentForGrading,
+  createSession,
+  updateSession,
+  instructorExists,
+  centreExists,
   getDueNotifications,
   markDelivered,
   markAttemptFailed,

@@ -7,7 +7,12 @@ router.get("/options", c.options);
 
 // screen 06 - grading sessions
 router.get("/sessions", c.listSessions);
+router.post("/sessions/check-availability", v.checkAvailability, c.checkAvailability);
+router.post("/sessions", v.createSession, c.createSession);
 router.get("/sessions/:id", c.getSession);
+
+// screen 07 - schedule / edit grading session
+router.put("/sessions/:id", v.updateSession, c.updateSession);
 
 // screen 08 - results & belt promotions
 router.get("/results/pending-summary", c.pendingSummary);

@@ -7,13 +7,23 @@ GO
 USE FSDP;
 GO
 
-IF OBJECT_ID('dbo.Centers', 'U') IS NOT NULL DROP TABLE dbo.HygieneGrades;
-IF OBJECT_ID('dbo.Instructors', 'U') IS NOT NULL DROP TABLE dbo.Inspections;
-IF OBJECT_ID('dbo.Terms', 'U') IS NOT NULL DROP TABLE dbo.Complaints;
-IF OBJECT_ID('dbo.Classes', 'U') IS NOT NULL DROP TABLE dbo.ItemLikes;
-IF OBJECT_ID('dbo.Invoices', 'U') IS NOT NULL DROP TABLE dbo.Feedback;
-IF OBJECT_ID('dbo.GradingSessions', 'U') IS NOT NULL DROP TABLE dbo.Payments;
-IF OBJECT_ID('dbo.GradingResults', 'U') IS NOT NULL DROP TABLE dbo.OrderItems;
+-- Drop in foreign-key order so the script can be re-run
+DROP TABLE IF EXISTS dbo.Users;
+DROP TABLE IF EXISTS dbo.Payments;
+DROP TABLE IF EXISTS dbo.Documents;
+DROP TABLE IF EXISTS dbo.DocumentFolders;
+DROP TABLE IF EXISTS dbo.EmailNotifications;
+DROP TABLE IF EXISTS dbo.Promotions;
+DROP TABLE IF EXISTS dbo.GradingResults;
+DROP TABLE IF EXISTS dbo.GradingRegistrations;
+DROP TABLE IF EXISTS dbo.Invoices;
+DROP TABLE IF EXISTS dbo.Students;
+DROP TABLE IF EXISTS dbo.GradingSessions;
+DROP TABLE IF EXISTS dbo.BeltRanks;
+DROP TABLE IF EXISTS dbo.Classes;
+DROP TABLE IF EXISTS dbo.Terms;
+DROP TABLE IF EXISTS dbo.Instructors;
+DROP TABLE IF EXISTS dbo.Centres;
 GO
 
 CREATE TABLE Centres (centreId INT IDENTITY PRIMARY KEY, name VARCHAR(50) NOT NULL);
@@ -242,3 +252,79 @@ INSERT INTO EmailNotifications(studentId, resultId, toEmail, subject, body, stat
 (7,11,'isaac.tan@invalid','Congratulations on your 3rd Kyu!',
   'Dear Isaac, congratulations on passing your grading. Your belt level has been updated to 3rd Kyu. See you on the mat, Aikido Shinjukai',
   'Failed',3,'Invalid email address',NULL,NULL,DATEADD(DAY,-10,SYSDATETIME()));
+
+GO
+
+-- ===== SHARED TABLES (login, payments, documents) =====
+
+-- Code uses Students.studentCode in places; keep it in sync with memberCode
+ALTER TABLE Students ADD studentCode AS memberCode;
+
+-- Extra Invoice columns used by finance reports and the student portal
+ALTER TABLE Invoices ADD
+  studentId  INT NULL REFERENCES Students(studentId),
+  feeType    VARCHAR(40) NULL,
+  invoiceNo  VARCHAR(20) NULL;
+GO
+
+CREATE TABLE Users (
+  userId        INT IDENTITY PRIMARY KEY,
+  fullName      VARCHAR(80)  NOT NULL,
+  email         VARCHAR(120) NOT NULL UNIQUE,
+  passwordHash  VARCHAR(100) NOT NULL,
+  role          VARCHAR(10)  NOT NULL DEFAULT 'Student' CHECK (role IN ('Admin','Student')),
+  centreId      INT NULL REFERENCES Centres(centreId),
+  studentId     INT NULL REFERENCES Students(studentId),
+  lastLoginAt   DATETIME NULL,
+  createdAt     DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+CREATE TABLE Payments (
+  paymentId      INT IDENTITY PRIMARY KEY,
+  invoiceId      INT NOT NULL REFERENCES Invoices(invoiceId),
+  amount         DECIMAL(10,2) NOT NULL,
+  paymentDate    DATE NOT NULL,
+  method         VARCHAR(20) NOT NULL,   -- Stripe, PayNow, WhatsApp, Email, Cash
+  bankReference  VARCHAR(50) NULL,
+  verifiedBy     VARCHAR(80) NULL
+);
+
+CREATE TABLE DocumentFolders (
+  folderId  INT IDENTITY PRIMARY KEY,
+  category  VARCHAR(40)  NOT NULL,
+  name      VARCHAR(100) NOT NULL,
+  UNIQUE (category, name)
+);
+
+CREATE TABLE Documents (
+  documentId    INT IDENTITY PRIMARY KEY,
+  folderId      INT NULL REFERENCES DocumentFolders(folderId),
+  category      VARCHAR(40)  NOT NULL,
+  name          VARCHAR(200) NOT NULL,
+  storedName    VARCHAR(200) NULL,
+  fileType      VARCHAR(30)  NULL,
+  sizeBytes     BIGINT NULL,
+  centreId      INT NULL REFERENCES Centres(centreId),
+  termId        INT NULL REFERENCES Terms(termId),
+  sessionLabel  VARCHAR(100) NULL,
+  uploadedBy    VARCHAR(80)  NULL,
+  uploadedAt    DATETIME NOT NULL DEFAULT GETDATE(),
+  updatedAt     DATETIME NOT NULL DEFAULT GETDATE(),
+  access        VARCHAR(20)  NULL,
+  version       INT NOT NULL DEFAULT 1,
+  linkedRef     VARCHAR(50)  NULL,
+  isArchived    BIT NOT NULL DEFAULT 0
+);
+GO
+
+-- Admin login:  admin@aikido.test / Admin1234
+INSERT INTO Users(fullName, email, passwordHash, role, centreId) VALUES
+('Admin', 'admin@aikido.test', '$2b$12$5915E4hx7IZRtkqSomajn.3QzBv93A2kHpJYRj43rOPsJe3hG95e2', 'Admin', NULL);
+
+-- Fill the new invoice columns and record payments for the paid invoices
+UPDATE Invoices SET feeType = CASE WHEN amount > 1000 THEN 'Term fees' ELSE 'Monthly fees' END,
+                    invoiceNo = CONCAT('INV-', 1000 + invoiceId);
+INSERT INTO Payments(invoiceId, amount, paymentDate, method, bankReference, verifiedBy)
+SELECT invoiceId, amount, paidDate, 'Stripe', CONCAT('pi_', invoiceId), 'Admin'
+FROM Invoices WHERE status = 'Paid';
+GO
